@@ -24,10 +24,6 @@
 
 package collection
 
-import "errors"
-
-var ErrNotFound = errors.New("key not found")
-
 // Map is an associated collection.
 type Map[K any, V any] interface {
 	Collecton[K, V]

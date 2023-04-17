@@ -44,7 +44,7 @@ func (al ArrayList[T]) Size() int {
 
 func (al ArrayList[T]) Found(index int) option.Option[T] {
 	if index >= al.Size() || index < 0 {
-		return option.NewNone[T](ErrOutOfBounds)
+		return option.NewNone[T](ErrNoSuchElement)
 	}
 	return option.NewSome(al.content[index])
 }

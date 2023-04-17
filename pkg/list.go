@@ -24,10 +24,6 @@
 
 package collection
 
-import "errors"
-
-var ErrOutOfBounds = errors.New("index is out of list bounds")
-
 // List is an ordered collection.
 type List[T any] interface {
 	Collecton[int, T]

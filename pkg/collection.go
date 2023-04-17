@@ -24,7 +24,14 @@
 
 package collection
 
-import option "github.com/goctus/option/pkg"
+import (
+	"errors"
+
+	option "github.com/goctus/option/pkg"
+)
+
+// ErrNoSuchElement is returned when a collection does not contain the required element.
+var ErrNoSuchElement = errors.New("no such element")
 
 // Collection is a collection o objects.
 type Collecton[K any, V any] interface {
