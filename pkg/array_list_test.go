@@ -87,6 +87,6 @@ func TestArrayList(t *testing.T) {
 	})
 	t.Run("Found returns an empty Option on wrong index", func(t *testing.T) {
 		_, err := collection.NewArrayList([]int{}).Found(0).Value(context.TODO())
-		assert.ErrorIs(t, collection.ErrOutOfBounds, err)
+		assert.ErrorIs(t, collection.ErrNoSuchElement, err)
 	})
 }

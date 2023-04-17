@@ -43,7 +43,7 @@ func (nm NativeMap[K, V]) Size() int {
 func (nm NativeMap[K, V]) Found(key K) option.Option[V] {
 	value, ok := nm.origin[key]
 	if !ok {
-		return option.NewNone[V](ErrNotFound)
+		return option.NewNone[V](ErrNoSuchElement)
 	}
 	return option.NewSome(value)
 }
