@@ -24,17 +24,49 @@
 
 package collection
 
-import "errors"
+import option "github.com/goctus/option/pkg"
 
-var ErrNotFound = errors.New("key not found")
+// NativeMap is Map that uses Go's map.
+type NativeMap[K, V any] struct {
+	origin map[any]V
+}
 
-// Map is an associated collection.
-type Map[K any, V any] interface {
-	Collecton[K, V]
+// NewNativeMap creates a new NativeMap.
+func NewNativeMap[K, V any](origin map[any]V) NativeMap[K, V] {
+	return NativeMap[K, V]{origin}
+}
 
-	// With returns a new map with the value associated with the key.
-	With(key K, value V) Map[K, V]
+func (nm NativeMap[K, V]) Size() int {
+	return len(nm.origin)
+}
 
-	// Without returns a new map without the entry.
-	Without(key K) Map[K, V]
+func (nm NativeMap[K, V]) Found(key K) option.Option[V] {
+	value, ok := nm.origin[key]
+	if !ok {
+		return option.NewNone[V](ErrNotFound)
+	}
+	return option.NewSome(value)
+}
+
+func (nm NativeMap[K, V]) With(key K, value V) Map[K, V] {
+	copy := nm.clone()
+	copy[key] = value
+	return NativeMap[K, V]{copy}
+}
+
+func (nm NativeMap[K, V]) Without(key K) Map[K, V] {
+	if _, contains := nm.origin[key]; !contains {
+		return nm
+	}
+	copy := nm.clone()
+	delete(copy, key)
+	return NativeMap[K, V]{copy}
+}
+
+func (nm NativeMap[K, V]) clone() (result map[any]V) {
+	result = make(map[any]V)
+	for k, v := range nm.origin {
+		result[k] = v
+	}
+	return
 }
