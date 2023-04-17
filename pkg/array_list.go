@@ -24,17 +24,41 @@
 
 package collection
 
-import "errors"
+import (
+	option "github.com/goctus/option/pkg"
+)
 
-var ErrOutOfBounds = errors.New("index is out of list bounds")
+// ArrayList is a list that internally uses a slice.
+type ArrayList[T any] struct {
+	content []T
+}
 
-// List is an ordered collection.
-type List[T any] interface {
-	Collecton[int, T]
+// NewArrayList creates a new ArrayList.
+func NewArrayList[T any](content []T) ArrayList[T] {
+	return ArrayList[T]{content}
+}
 
-	// With returns a new List with the others appended to it.
-	With(others ...T) List[T]
+func (al ArrayList[T]) Size() int {
+	return len(al.content)
+}
 
-	// Without returns a new List without the element at the index.
-	Without(index int) List[T]
+func (al ArrayList[T]) Found(index int) option.Option[T] {
+	if index >= al.Size() || index < 0 {
+		return option.NewNone[T](ErrOutOfBounds)
+	}
+	return option.NewSome(al.content[index])
+}
+
+func (al ArrayList[T]) With(others ...T) List[T] {
+	return ArrayList[T]{append(al.content, others...)}
+}
+
+func (al ArrayList[T]) Without(index int) List[T] {
+	if index < 0 || index >= al.Size() {
+		return al
+	}
+	result := make([]T, 0, al.Size()-1)
+	result = append(result, al.content[:index]...)
+	result = append(result, al.content[index+1:]...)
+	return ArrayList[T]{result}
 }
